@@ -1,0 +1,8 @@
+[package]
+name = "dev-cli"
+version = "0.1.0"
+authors = ["Max Block <maxblock@pm.me>"]
+edition = "2018"
+
+[dependencies]
+dns-lookup = "1.0.3"
