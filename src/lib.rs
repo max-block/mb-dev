@@ -1,5 +1,7 @@
 use std::process;
 
+pub const VERSION: &str = "0.1";
+
 pub fn shell_exec(shell_command: &str) {
     println!("{}", shell_command);
     let output = process::Command::new("sh")

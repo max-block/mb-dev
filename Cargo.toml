@@ -6,3 +6,4 @@ edition = "2018"
 
 [dependencies]
 dns-lookup = "1.0.3"
+clap = "2.33.3"
