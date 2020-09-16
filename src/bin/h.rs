@@ -35,11 +35,9 @@ fn main() {
         .get_matches();
 
     match matches.subcommand() {
-        ("list", Some(_)) => {
-            dev_cli::shell_exec(
-                "hcloud server list -o columns=name,ipv4,datacenter,status,type,volumes",
-            );
-        }
+        ("list", Some(_)) => dev_cli::shell_exec(
+            "hcloud server list -o columns=name,ipv4,datacenter,status,type,volumes",
+        ),
         ("rebuild", Some(sub_matches)) => {
             for server in sub_matches.values_of("servers").unwrap() {
                 dev_cli::shell_exec(&format!(

@@ -1,4 +1,3 @@
-use std::process;
 use std::process::{Command, Stdio};
 
 pub const VERSION: &str = "0.1";

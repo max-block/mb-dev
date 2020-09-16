@@ -1,61 +1,64 @@
-use std::env;
-use std::process;
+use clap::{App, Arg, SubCommand};
+use dev_cli::VERSION;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    if args.len() < 2 {
-        println!("Usage: g COMMAND [OPTS]");
-        process::exit(1);
-    }
+    let diff_sub = SubCommand::with_name("diff").about("git diff").alias("d");
+    let tag_sub = SubCommand::with_name("tag").about("git tag").alias("t");
+    let status_sub = SubCommand::with_name("status")
+        .about("git status")
+        .alias("s");
+    let clone_sub = SubCommand::with_name("clone")
+        .about("git clone")
+        .alias("c")
+        .arg(Arg::with_name("url").required(true).takes_value(true));
+    let push_sub = SubCommand::with_name("push")
+        .about("git add . && git commit -m update && git push")
+        .alias("p");
+    let add_tag_sub = SubCommand::with_name("add-tag")
+        .about("add tag")
+        .alias("at")
+        .arg(Arg::with_name("version").required(true).takes_value(true));
+    let delete_tag_sub = SubCommand::with_name("delete-tag")
+        .about("delete tag")
+        .alias("dt")
+        .arg(Arg::with_name("version").required(true).takes_value(true));
 
-    let command = args.get(1).unwrap();
+    let matches = App::new("hcloud shortcuts")
+        .version(VERSION)
+        .subcommand(diff_sub)
+        .subcommand(tag_sub)
+        .subcommand(status_sub)
+        .subcommand(clone_sub)
+        .subcommand(push_sub)
+        .subcommand(add_tag_sub)
+        .subcommand(delete_tag_sub)
+        .get_matches();
 
-    match command.as_str() {
-        "d" => {
-            dev_cli::shell_exec("git diff");
+    match matches.subcommand() {
+        ("diff", Some(_)) => dev_cli::shell_exec("git diff"),
+        ("tag", Some(_)) => dev_cli::shell_exec("git tag --sort=-creatordate"),
+        ("status", Some(_)) => dev_cli::shell_exec("git status"),
+        ("push", Some(_)) => dev_cli::shell_exec("git add . && git commit -m update && git push"),
+        ("clone", Some(sub_matches)) => {
+            dev_cli::shell_exec(&format!(
+                "git clone {}",
+                sub_matches.value_of("url").unwrap()
+            ));
         }
-        "t" => {
-            dev_cli::shell_exec("git tag --sort=-creatordate");
-        }
-        "s" => {
-            dev_cli::shell_exec("git status");
-        }
-        "c" => {
-            if args.len() != 3 {
-                println!("Usage: g c REPO");
-                process::exit(1);
-            }
-            let repo = args.get(2).unwrap();
-            dev_cli::shell_exec(&format!("git clone {}", repo));
-        }
-        "p" => {
-            dev_cli::shell_exec("git add . && git commit -m update && git push");
-        }
-        "at" => {
-            if args.len() != 3 {
-                println!("Usage: g at VERSION");
-                process::exit(1);
-            }
-            let version = args.get(2).unwrap();
+        ("add_tag", Some(sub_matches)) => {
+            let version = sub_matches.value_of("version").unwrap();
             dev_cli::shell_exec(&format!(
                 "git tag -a '{version}' -m 'version {version}' && git push origin {version}",
                 version = version
             ));
         }
-        "dt" => {
-            if args.len() != 3 {
-                println!("Usage: g dt VERSION");
-                process::exit(1);
-            }
-            let version = args.get(2).unwrap();
+        ("delete_tag", Some(sub_matches)) => {
+            let version = sub_matches.value_of("version").unwrap();
             dev_cli::shell_exec(&format!(
                 "git tag -d '{version}' && git push origin :refs/tags/{version}",
                 version = version
             ));
         }
-        _ => {
-            println!("unknown command: {}", command);
-            process::exit(1);
-        }
+        _ => {}
     }
 }
