@@ -45,14 +45,14 @@ fn main() {
                 sub_matches.value_of("url").unwrap()
             ));
         }
-        ("add_tag", Some(sub_matches)) => {
+        ("add-tag", Some(sub_matches)) => {
             let version = sub_matches.value_of("version").unwrap();
             dev_cli::shell_exec(&format!(
                 "git tag -a '{version}' -m 'version {version}' && git push origin {version}",
                 version = version
             ));
         }
-        ("delete_tag", Some(sub_matches)) => {
+        ("delete-tag", Some(sub_matches)) => {
             let version = sub_matches.value_of("version").unwrap();
             dev_cli::shell_exec(&format!(
                 "git tag -d '{version}' && git push origin :refs/tags/{version}",
