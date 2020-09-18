@@ -1,5 +1,7 @@
-use dev_cli::shell_exec;
+use std::io;
 
 fn main() {
-    shell_exec("top");
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    println!("your input: {}", input);
 }

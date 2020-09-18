@@ -1,6 +1,8 @@
 use clap::{App, Arg, SubCommand};
+use std::io;
 
 use dev_cli::VERSION;
+use std::io::Write;
 
 fn main() {
     let list_sub = SubCommand::with_name("list")
@@ -40,15 +42,44 @@ fn main() {
         ),
         ("rebuild", Some(sub_matches)) => {
             for server in sub_matches.values_of("servers").unwrap() {
-                dev_cli::shell_exec(&format!(
-                    "hcloud server rebuild {} --image=ubuntu-20.04",
+                if server != "test" {
+                    print!(
+                    "You are going to rebuild the server \"{}\". If you are sure, type its name: ",
                     server
-                ));
+                );
+                    let _ = io::stdout().flush();
+                    let mut input = String::new();
+                    io::stdin().read_line(&mut input).unwrap();
+                    if server == input.trim() {
+                        dev_cli::shell_exec(&format!(
+                            "hcloud server rebuild {} --image=ubuntu-20.04",
+                            server
+                        ));
+                    } else {
+                        println!("You've typed a wrong name!");
+                    }
+                } else {
+                    dev_cli::shell_exec(&format!(
+                        "hcloud server rebuild {} --image=ubuntu-20.04",
+                        server
+                    ));
+                }
             }
         }
         ("delete", Some(sub_matches)) => {
             for server in sub_matches.values_of("servers").unwrap() {
-                dev_cli::shell_exec(&format!("hcloud server delete {}", server));
+                print!(
+                    "You are going to delete the server \"{}\". If you are sure, type its name: ",
+                    server
+                );
+                let _ = io::stdout().flush();
+                let mut input = String::new();
+                io::stdin().read_line(&mut input).unwrap();
+                if server == input.trim() {
+                    dev_cli::shell_exec(&format!("hcloud server delete {}", server));
+                } else {
+                    println!("You've typed a wrong name!");
+                }
             }
         }
         _ => {}
