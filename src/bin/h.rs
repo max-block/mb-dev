@@ -1,7 +1,7 @@
 use clap::{App, Arg, SubCommand};
 use std::io;
 
-use dev_cli::VERSION;
+use mb_dev::VERSION;
 use std::io::Write;
 
 fn main() {
@@ -37,7 +37,7 @@ fn main() {
         .get_matches();
 
     match matches.subcommand() {
-        ("list", Some(_)) => dev_cli::shell_exec(
+        ("list", Some(_)) => mb_dev::shell_exec(
             "hcloud server list -o columns=name,ipv4,datacenter,status,type,volumes",
         ),
         ("rebuild", Some(sub_matches)) => {
@@ -51,7 +51,7 @@ fn main() {
                     let mut input = String::new();
                     io::stdin().read_line(&mut input).unwrap();
                     if server == input.trim() {
-                        dev_cli::shell_exec(&format!(
+                        mb_dev::shell_exec(&format!(
                             "hcloud server rebuild {} --image=ubuntu-20.04",
                             server
                         ));
@@ -59,7 +59,7 @@ fn main() {
                         println!("You've typed a wrong name!");
                     }
                 } else {
-                    dev_cli::shell_exec(&format!(
+                    mb_dev::shell_exec(&format!(
                         "hcloud server rebuild {} --image=ubuntu-20.04",
                         server
                     ));
@@ -76,7 +76,7 @@ fn main() {
                 let mut input = String::new();
                 io::stdin().read_line(&mut input).unwrap();
                 if server == input.trim() {
-                    dev_cli::shell_exec(&format!("hcloud server delete {}", server));
+                    mb_dev::shell_exec(&format!("hcloud server delete {}", server));
                 } else {
                     println!("You've typed a wrong name!");
                 }

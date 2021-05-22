@@ -1,5 +1,5 @@
 use clap::{App, Arg, SubCommand};
-use dev_cli::VERSION;
+use mb_dev::VERSION;
 use std::env;
 use std::path::Path;
 use std::process;
@@ -43,13 +43,13 @@ fn main() {
 
     match matches.subcommand() {
         ("list", Some(_)) => {
-            dev_cli::shell_exec("pip list");
+            mb_dev::shell_exec("pip list");
         }
         ("list-outdated", Some(_)) => {
-            dev_cli::shell_exec("pip list -o");
+            mb_dev::shell_exec("pip list -o");
         }
         ("update", Some(_)) => {
-            dev_cli::shell_exec("pip install -U pip setuptools wheel");
+            mb_dev::shell_exec("pip install -U pip setuptools wheel");
         }
         ("venv", Some(_)) => {
             if env::var_os("VIRTUAL_ENV").is_some() {
@@ -60,7 +60,7 @@ fn main() {
                 println!(".venv exists already");
                 process::exit(1);
             }
-            dev_cli::shell_exec("python -m venv .venv");
+            mb_dev::shell_exec("python -m venv .venv");
         }
         ("install", Some(sub_matches)) => {
             if env::var_os("VIRTUAL_ENV").is_none() {
@@ -69,12 +69,12 @@ fn main() {
             }
             if sub_matches.values_of("packages").is_some() {
                 for package in sub_matches.values_of("packages").unwrap() {
-                    dev_cli::shell_exec(&format!("pip install {}", package));
+                    mb_dev::shell_exec(&format!("pip install {}", package));
                 }
             } else if Path::new("setup.py").exists() {
-                dev_cli::shell_exec("pip install -Ue .[dev]");
+                mb_dev::shell_exec("pip install -Ue .[dev]");
             } else {
-                dev_cli::shell_exec("pip install -Ur requirements.txt");
+                mb_dev::shell_exec("pip install -Ur requirements.txt");
             }
         }
         ("delete", Some(_)) => {
@@ -82,8 +82,8 @@ fn main() {
                 println!("venv is not activated");
                 process::exit(1);
             }
-            dev_cli::shell_exec("pip list --format freeze -e | xargs pip uninstall -y");
-            dev_cli::shell_exec("pip freeze | xargs pip uninstall -y");
+            mb_dev::shell_exec("pip list --format freeze -e | xargs pip uninstall -y");
+            mb_dev::shell_exec("pip freeze | xargs pip uninstall -y");
         }
         _ => {}
     }

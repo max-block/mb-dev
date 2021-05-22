@@ -1,5 +1,5 @@
 use clap::{App, Arg, SubCommand};
-use dev_cli::VERSION;
+use mb_dev::VERSION;
 
 fn main() {
     let diff_sub = SubCommand::with_name("diff").about("git diff").alias("d");
@@ -35,26 +35,26 @@ fn main() {
         .get_matches();
 
     match matches.subcommand() {
-        ("diff", Some(_)) => dev_cli::shell_exec("git diff"),
-        ("tag", Some(_)) => dev_cli::shell_exec("git tag --sort=-creatordate"),
-        ("status", Some(_)) => dev_cli::shell_exec("git status"),
-        ("push", Some(_)) => dev_cli::shell_exec("git add . && git commit -m update && git push"),
+        ("diff", Some(_)) => mb_dev::shell_exec("git diff"),
+        ("tag", Some(_)) => mb_dev::shell_exec("git tag --sort=-creatordate"),
+        ("status", Some(_)) => mb_dev::shell_exec("git status"),
+        ("push", Some(_)) => mb_dev::shell_exec("git add . && git commit -m update && git push"),
         ("clone", Some(sub_matches)) => {
-            dev_cli::shell_exec(&format!(
+            mb_dev::shell_exec(&format!(
                 "git clone {}",
                 sub_matches.value_of("url").unwrap()
             ));
         }
         ("add-tag", Some(sub_matches)) => {
             let version = sub_matches.value_of("version").unwrap();
-            dev_cli::shell_exec(&format!(
+            mb_dev::shell_exec(&format!(
                 "git tag -a '{version}' -m 'version {version}' && git push origin {version}",
                 version = version
             ));
         }
         ("delete-tag", Some(sub_matches)) => {
             let version = sub_matches.value_of("version").unwrap();
-            dev_cli::shell_exec(&format!(
+            mb_dev::shell_exec(&format!(
                 "git tag -d '{version}' && git push origin :refs/tags/{version}",
                 version = version
             ));

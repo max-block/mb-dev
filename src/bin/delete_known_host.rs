@@ -1,7 +1,7 @@
 use clap::{App, Arg};
 use dns_lookup::lookup_host;
 
-use dev_cli::VERSION;
+use mb_dev::VERSION;
 
 fn main() {
     let matches = App::new("Delete hosts from ~/.ssh/known_hosts")
@@ -15,11 +15,11 @@ fn main() {
 }
 
 fn delete_host(host: &str) {
-    dev_cli::shell_exec(format!("ssh-keygen -R {}", host).as_str());
+    mb_dev::shell_exec(format!("ssh-keygen -R {}", host).as_str());
 
     if let Ok(ips) = lookup_host(host) {
         for h in ips.iter() {
-            dev_cli::shell_exec(format!("ssh-keygen -R {}", h.to_string()).as_str());
+            mb_dev::shell_exec(format!("ssh-keygen -R {}", h.to_string()).as_str());
         }
     }
 }
