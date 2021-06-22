@@ -11,9 +11,9 @@ fn main() {
         .get_matches();
 
     match matches.subcommand() {
-        Some(("list", _cmd_matches)) => shell_exec("hcloud server list -o columns=name,ipv4,datacenter,status,type,volumes"),
-        Some(("rebuild", cmd_matches)) => {
-            let server = cmd_matches.value_of("server").unwrap();
+        Some(("list", _)) => shell_exec("hcloud server list -o columns=name,ipv4,datacenter,status,type,volumes"),
+        Some(("rebuild", m)) => {
+            let server = m.value_of("server").unwrap();
 
             // Rebuild only 'test' server without a confirmation check
             if server != "test" {
@@ -24,8 +24,8 @@ fn main() {
             }
             shell_exec(&format!("hcloud server rebuild '{}' --image=ubuntu-20.04", server))
         }
-        Some(("delete", cmd_matches)) => {
-            let server = cmd_matches.value_of("server").unwrap();
+        Some(("delete", m)) => {
+            let server = m.value_of("server").unwrap();
             if server == "test" {
                 exit("Can't delete 'test' server. Do it via hcloud directly.")
             }
@@ -35,6 +35,6 @@ fn main() {
             }
             shell_exec(&format!("hcloud server delete '{}'", server))
         }
-        _ => unreachable!(),
+        _ => println!("unknown subcommand"),
     }
 }

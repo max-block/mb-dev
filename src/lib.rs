@@ -3,7 +3,7 @@ use std::{
     process::{self, Command, Stdio},
 };
 
-pub const VERSION: &str = "0.1";
+pub const VERSION: &str = "0.1.0";
 
 pub fn shell_exec(shell_command: &str) {
     println!("{}", shell_command);
