@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Max Block <maxblock@pm.me>"]
 description = "my dev cli tools"
 edition = "2018"
-license = "unknown"
+license = "Unlicense"
 
 [dependencies]
 dns-lookup = "1.0.6"
