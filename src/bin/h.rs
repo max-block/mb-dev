@@ -1,8 +1,9 @@
-use clap::{App, AppSettings};
+use clap::{crate_version, App, AppSettings};
 use mb_dev::{exit, shell_exec, user_input};
 
 fn main() {
     let matches = App::new("hcloud helper")
+        .version(crate_version!())
         .setting(AppSettings::SubcommandRequiredElseHelp)
         .setting(AppSettings::DisableHelpSubcommand)
         .subcommand(App::new("list").alias("l").about("List servers"))

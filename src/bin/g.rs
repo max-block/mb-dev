@@ -1,9 +1,9 @@
-use clap::{App, AppSettings, Arg};
-use mb_dev::{shell_exec, VERSION};
+use clap::{crate_version, App, AppSettings, Arg};
+use mb_dev::shell_exec;
 
 fn main() {
     let matches = App::new("git helper")
-        .version(VERSION)
+        .version(crate_version!())
         .setting(AppSettings::SubcommandRequiredElseHelp)
         .setting(AppSettings::DisableHelpSubcommand)
         .subcommand(App::new("diff").alias("d").about("git diff"))
