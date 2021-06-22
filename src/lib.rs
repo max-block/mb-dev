@@ -1,4 +1,7 @@
-use std::process::{Command, Stdio};
+use std::{
+    io::{self, Write},
+    process::{self, Command, Stdio},
+};
 
 pub const VERSION: &str = "0.1";
 
@@ -13,4 +16,17 @@ pub fn shell_exec(shell_command: &str) {
         .expect("shell_exec failed");
     let res = std::str::from_utf8(&output.stdout).expect("shell_exec->from_utf8 failed");
     println!("{}", res);
+}
+
+pub fn user_input(msg: &str) -> String {
+    print!("{}", msg);
+    io::stdout().flush().unwrap();
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    input.trim().to_string()
+}
+
+pub fn exit(msg: &str) -> ! {
+    println!("{}", msg);
+    process::exit(1)
 }
