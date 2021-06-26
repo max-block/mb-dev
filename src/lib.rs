@@ -3,7 +3,12 @@ use std::{
     process::{self, Command, Stdio},
 };
 
-pub fn shell_exec(shell_command: &str) {
+pub fn shell_exec(shell_command: &str) -> String {
+    let output = Command::new("sh").args(&["-c", shell_command]).output().expect("shell_exec failed");
+    std::str::from_utf8(&output.stdout).expect("shell_exec->from_utf8 failed").to_string()
+}
+
+pub fn shell_print(shell_command: &str) {
     println!("{}", shell_command);
     let output = Command::new("sh")
         .args(&["-c", shell_command])

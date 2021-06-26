@@ -1,5 +1,5 @@
 use clap::{crate_version, App, AppSettings};
-use mb_dev::{exit, shell_exec, user_input};
+use mb_dev::{exit, shell_print, user_input};
 
 fn main() {
     let matches = App::new("hcloud helper")
@@ -12,7 +12,7 @@ fn main() {
         .get_matches();
 
     match matches.subcommand() {
-        Some(("list", _)) => shell_exec("hcloud server list -o columns=name,ipv4,datacenter,status,type,volumes"),
+        Some(("list", _)) => shell_print("hcloud server list -o columns=name,ipv4,datacenter,status,type,volumes"),
         Some(("rebuild", m)) => {
             let server = m.value_of("server").unwrap();
 
@@ -23,7 +23,7 @@ fn main() {
                     exit(&format!("Confirm failed! {} != {}", server, confirm))
                 }
             }
-            shell_exec(&format!("hcloud server rebuild '{}' --image=ubuntu-20.04", server))
+            shell_print(&format!("hcloud server rebuild '{}' --image=ubuntu-20.04", server))
         }
         Some(("delete", m)) => {
             let server = m.value_of("server").unwrap();
@@ -34,7 +34,7 @@ fn main() {
             if server != confirm {
                 exit(&format!("Confirm failed! {} != {}", server, confirm))
             }
-            shell_exec(&format!("hcloud server delete '{}'", server))
+            shell_print(&format!("hcloud server delete '{}'", server))
         }
         _ => println!("unknown subcommand"),
     }

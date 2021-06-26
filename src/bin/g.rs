@@ -1,5 +1,5 @@
 use clap::{crate_version, App, AppSettings, Arg};
-use mb_dev::shell_exec;
+use mb_dev::shell_print;
 
 fn main() {
     let matches = App::new("git helper")
@@ -17,17 +17,17 @@ fn main() {
         .get_matches();
 
     match matches.subcommand() {
-        Some(("diff", _)) => shell_exec("git diff"),
-        Some(("log", _)) => shell_exec("git log"),
-        Some(("tag", _)) => shell_exec("git tag --sort=-creatordate"),
-        Some(("status", _)) => shell_exec("git status"),
-        Some(("clone", m)) => shell_exec(&format!("git clone {}", m.value_of("repo").unwrap())),
-        Some(("push", m)) => shell_exec(&format!("git add . && git commit -m '{}' && git push", m.value_of("MESSAGE").unwrap())),
-        Some(("add-tag", m)) => shell_exec(&format!(
+        Some(("diff", _)) => shell_print("git diff"),
+        Some(("log", _)) => shell_print("git log"),
+        Some(("tag", _)) => shell_print("git tag --sort=-creatordate"),
+        Some(("status", _)) => shell_print("git status"),
+        Some(("clone", m)) => shell_print(&format!("git clone {}", m.value_of("repo").unwrap())),
+        Some(("push", m)) => shell_print(&format!("git add . && git commit -m '{}' && git push", m.value_of("MESSAGE").unwrap())),
+        Some(("add-tag", m)) => shell_print(&format!(
             "git tag -a '{version}' -m '{version}' && git push origin {version}",
             version = m.value_of("VERSION").unwrap()
         )),
-        Some(("delete-tag", m)) => shell_exec(&format!(
+        Some(("delete-tag", m)) => shell_print(&format!(
             "git tag -d '{version}' && git push origin :refs/tags/{version}",
             version = m.value_of("VERSION").unwrap()
         )),
