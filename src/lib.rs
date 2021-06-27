@@ -3,22 +3,20 @@ use std::{
     process::{self, Command, Stdio},
 };
 
-pub fn shell_exec(shell_command: &str) -> String {
-    let output = Command::new("sh").args(&["-c", shell_command]).output().expect("shell_exec failed");
-    std::str::from_utf8(&output.stdout).expect("shell_exec->from_utf8 failed").to_string()
-}
-
-pub fn shell_print(shell_command: &str) {
-    println!("{}", shell_command);
-    let output = Command::new("sh")
-        .args(&["-c", shell_command])
+pub fn shell(cmd: &str) {
+    println!("{}", cmd);
+    Command::new("sh")
+        .args(&["-c", cmd])
         .stderr(Stdio::inherit())
         .stdout(Stdio::inherit())
         .stdin(Stdio::inherit())
         .output()
         .expect("shell_exec failed");
-    let res = std::str::from_utf8(&output.stdout).expect("shell_exec->from_utf8 failed");
-    println!("{}", res);
+}
+
+pub fn shell_capture(cmd: &str) -> String {
+    let output = Command::new("sh").args(&["-c", cmd]).output().expect("shell_exec failed");
+    std::str::from_utf8(&output.stdout).expect("shell_exec->from_utf8 failed").to_string()
 }
 
 pub fn user_input(msg: &str) -> String {

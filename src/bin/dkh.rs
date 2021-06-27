@@ -1,6 +1,6 @@
 use clap::{crate_version, App, Arg};
 use dns_lookup::lookup_host;
-use mb_dev::shell_print;
+use mb_dev::shell;
 
 fn main() {
     let matches = App::new("dkh")
@@ -15,11 +15,11 @@ fn main() {
 }
 
 fn delete_host(host: &str) {
-    shell_print(format!("ssh-keygen -R {}", host).as_str());
+    shell(&format!("ssh-keygen -R {}", host));
 
     if let Ok(ips) = lookup_host(host) {
         for h in ips.iter() {
-            shell_print(format!("ssh-keygen -R {}", h.to_string()).as_str());
+            shell(&format!("ssh-keygen -R {}", h));
         }
     }
 }

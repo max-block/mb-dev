@@ -1,7 +1,7 @@
 use std::{env, path::Path};
 
 use clap::{crate_version, App, AppSettings, Arg};
-use mb_dev::{exit, shell_exec, shell_print};
+use mb_dev::{exit, shell, shell_capture};
 
 fn process_install(packages: Vec<&str>) {
     if env::var_os("VIRTUAL_ENV").is_none() {
@@ -9,11 +9,11 @@ fn process_install(packages: Vec<&str>) {
     }
 
     if !packages.is_empty() {
-        shell_print(&format!("pip install {}", packages.join(" ")))
+        shell(&format!("pip install {}", packages.join(" ")))
     } else if Path::new("setup.py").exists() {
-        shell_print("pip install -Ue .[dev]")
+        shell("pip install -Ue .[dev]")
     } else {
-        shell_print("pip install -Ur requirements.txt")
+        shell("pip install -Ur requirements.txt")
     }
 }
 
@@ -24,26 +24,26 @@ fn process_venv() {
     if Path::new(".venv").exists() {
         exit(".venv exists already")
     }
-    shell_print("python3 -m venv .venv")
+    shell("python3 -m venv .venv")
 }
 
 fn process_uninstall() {
     if env::var_os("VIRTUAL_ENV").is_none() {
         exit("venv is not activated")
     }
-    shell_print("pip list --format freeze -e | xargs pip uninstall -y");
-    shell_print("pip freeze | xargs pip uninstall -y");
+    shell("pip list --format freeze -e | xargs pip uninstall -y");
+    shell("pip freeze | xargs pip uninstall -y");
 }
 
 fn process_kill_uvicorn() {
     for p in find_uvicorn_processes() {
-        shell_print(&format!("kill -9 {}", p))
+        shell(&format!("kill -9 {}", p))
     }
 }
 
 fn find_uvicorn_processes() -> Vec<u32> {
     let mut result: Vec<u32> = vec![];
-    let res = shell_exec(r#"echo "$(ps -o pid,command -ax)""#);
+    let res = shell_capture(r#"echo "$(ps -o pid,command -ax)""#);
     for line in res.split('\n') {
         if line.contains("uvicorn") && line.contains("python") {
             if let Some(number) = line.split_ascii_whitespace().next() {
@@ -74,9 +74,9 @@ fn main() {
         .get_matches();
 
     match matches.subcommand() {
-        Some(("pip-list-outdated", _)) => shell_print("pip list -o"),
-        Some(("pip-list", _)) => shell_print("pip list"),
-        Some(("pip-update", _)) => shell_print("pip install -U pip setuptools"),
+        Some(("pip-list-outdated", _)) => shell("pip list -o"),
+        Some(("pip-list", _)) => shell("pip list"),
+        Some(("pip-update", _)) => shell("pip install -U pip setuptools"),
         Some(("install", m)) => process_install(m.values_of("packages").unwrap_or_default().collect::<Vec<&str>>()),
         Some(("venv", _)) => process_venv(),
         Some(("uninstall", _)) => process_uninstall(),
