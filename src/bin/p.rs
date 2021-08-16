@@ -25,7 +25,8 @@ fn process_venv() {
     if Path::new(".venv").exists() {
         exit(".venv exists already")
     }
-    shell("python3 -m venv .venv")
+    shell("python3 -m venv .venv");
+    shell(".venv/bin/pip install -U pip setuptools");
 }
 
 fn process_uninstall() {
