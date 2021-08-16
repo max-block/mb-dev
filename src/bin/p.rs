@@ -1,6 +1,7 @@
 use std::{env, path::Path};
 
-use clap::{crate_version, App, AppSettings, Arg};
+use clap::{App, AppSettings, Arg, crate_version};
+
 use mb_dev::{exit, shell, shell_capture};
 
 fn process_install(packages: Vec<&str>) {
@@ -35,17 +36,21 @@ fn process_uninstall() {
     shell("pip freeze | xargs pip uninstall -y");
 }
 
-fn process_kill_uvicorn() {
-    for p in find_uvicorn_processes() {
+fn process_kill() {
+    for p in find_python_processes() {
         shell(&format!("kill -9 {}", p))
     }
 }
 
-fn find_uvicorn_processes() -> Vec<u32> {
+fn find_python_processes() -> Vec<u32> {
     let mut result: Vec<u32> = vec![];
     let res = shell_capture(r#"echo "$(ps -o pid,command -ax)""#);
     for line in res.split('\n') {
-        if line.contains("uvicorn") && line.contains("python") {
+        if line.contains("python")
+            && (line.contains("uvicorn")
+                || line.contains("multiprocessing.resource_tracker")
+                || line.contains("multiprocessing.spawn"))
+        {
             if let Some(number) = line.split_ascii_whitespace().next() {
                 result.push(number.parse::<u32>().unwrap());
             }
@@ -66,11 +71,11 @@ fn main() {
             App::new("install")
                 .alias("i")
                 .about("install packages or project (setup.py or requirements.txt)")
-                .arg(Arg::new("packages").required(false).multiple(true)),
+                .arg(Arg::new("packages").required(false).multiple_values(true)),
         )
         .subcommand(App::new("venv").alias("v").about("create .venv"))
         .subcommand(App::new("uninstall").alias("d").about("uninstall all packages(+editable) from venv"))
-        .subcommand(App::new("kill-uvicorn").alias("k").about("kill a dev uvicorn server"))
+        .subcommand(App::new("kill").alias("k").about("kill python processes"))
         .get_matches();
 
     match matches.subcommand() {
@@ -80,7 +85,7 @@ fn main() {
         Some(("install", m)) => process_install(m.values_of("packages").unwrap_or_default().collect::<Vec<&str>>()),
         Some(("venv", _)) => process_venv(),
         Some(("uninstall", _)) => process_uninstall(),
-        Some(("kill-uvicorn", _)) => process_kill_uvicorn(),
+        Some(("kill", _)) => process_kill(),
         _ => println!("unsupported command"),
     }
 }
