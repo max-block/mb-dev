@@ -1,4 +1,4 @@
-use clap::{App, Arg, crate_version};
+use clap::{crate_version, App, Arg};
 use dns_lookup::lookup_host;
 
 use mb_dev::shell;
@@ -11,7 +11,9 @@ fn main() {
         .get_matches();
 
     for host in matches.values_of("hosts").unwrap().collect::<Vec<_>>() {
-        delete_host(host);
+        for item in host.split(',') {
+            delete_host(item);
+        }
     }
 }
 

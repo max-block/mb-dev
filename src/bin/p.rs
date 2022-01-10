@@ -1,6 +1,6 @@
 use std::{env, path::Path};
 
-use clap::{App, AppSettings, Arg, crate_version};
+use clap::{crate_version, App, AppSettings, Arg};
 
 use mb_dev::{exit, shell, shell_capture};
 

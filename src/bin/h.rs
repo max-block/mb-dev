@@ -1,4 +1,4 @@
-use clap::{App, AppSettings, crate_version};
+use clap::{arg, crate_version, App, AppSettings};
 
 use mb_dev::{exit, shell, user_input};
 
@@ -8,8 +8,8 @@ fn main() {
         .setting(AppSettings::SubcommandRequiredElseHelp)
         .setting(AppSettings::DisableHelpSubcommand)
         .subcommand(App::new("list").alias("l").about("List servers"))
-        .subcommand(App::new("rebuild").alias("r").about("Rebuild a server").arg("<server>"))
-        .subcommand(App::new("delete").alias("d").about("Delete a server").arg("<server>"))
+        .subcommand(App::new("rebuild").alias("r").about("Rebuild a server").arg(arg!(<server>)))
+        .subcommand(App::new("delete").alias("d").about("Delete a server").arg(arg!(<server>)))
         .get_matches();
 
     match matches.subcommand() {

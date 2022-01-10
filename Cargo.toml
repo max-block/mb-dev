@@ -1,11 +1,11 @@
 [package]
 name = "mb-dev"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["Max Block <maxblock@pm.me>"]
 description = "my dev cli tools"
-edition = "2018"
+edition = "2021"
 license = "Unlicense"
 
 [dependencies]
 dns-lookup = "1.0.8"
-clap = "3.0.0-beta.4"
+clap = {version = "3.0.5", features=["cargo"]}
