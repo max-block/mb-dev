@@ -1,6 +1,6 @@
 [package]
 name = "mb-dev"
-version = "0.1.6"
+version = "0.1.7"
 authors = ["Max Block <maxblock@pm.me>"]
 description = "my dev cli tools"
 edition = "2021"

@@ -1,4 +1,4 @@
-use clap::{arg, crate_version, App, AppSettings};
+use clap::{App, AppSettings, arg, crate_version};
 
 use mb_dev::{exit, shell, user_input};
 
@@ -25,7 +25,7 @@ fn main() {
                 }
             }
             shell(&format!("hcloud server rebuild '{}' --image=ubuntu-20.04", server));
-            shell(&format!("dkh {}", server));
+            shell(&format!("dh {}", server));
         }
         Some(("delete", m)) => {
             let server = m.value_of("server").unwrap();
