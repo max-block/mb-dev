@@ -1,15 +1,15 @@
-use clap::{App, AppSettings, arg, crate_version};
+use clap::{arg, crate_version, Command};
 
 use mb_dev::{exit, shell, user_input};
 
 fn main() {
-    let matches = App::new("hcloud helper")
+    let matches = Command::new("hcloud helper")
         .version(crate_version!())
-        .setting(AppSettings::SubcommandRequiredElseHelp)
-        .setting(AppSettings::DisableHelpSubcommand)
-        .subcommand(App::new("list").alias("l").about("List servers"))
-        .subcommand(App::new("rebuild").alias("r").about("Rebuild a server").arg(arg!(<server>)))
-        .subcommand(App::new("delete").alias("d").about("Delete a server").arg(arg!(<server>)))
+        .subcommand_required(true)
+        .arg_required_else_help(true)
+        .subcommand(Command::new("list").alias("l").about("List servers"))
+        .subcommand(Command::new("rebuild").alias("r").about("Rebuild a server").arg(arg!(<server>)))
+        .subcommand(Command::new("delete").alias("d").about("Delete a server").arg(arg!(<server>)))
         .get_matches();
 
     match matches.subcommand() {

@@ -1,6 +1,6 @@
 use std::{env, path::Path};
 
-use clap::{crate_version, App, AppSettings, Arg};
+use clap::{crate_version, Arg, Command};
 
 use mb_dev::{exit, shell, shell_capture};
 
@@ -61,22 +61,22 @@ fn find_python_processes() -> Vec<u32> {
 }
 
 fn main() {
-    let matches = App::new("python helper")
+    let matches = Command::new("python helper")
         .version(crate_version!())
-        .setting(AppSettings::SubcommandRequiredElseHelp)
-        .setting(AppSettings::DisableHelpSubcommand)
-        .subcommand(App::new("pip-list-outdated").alias("o").about("pip list -o"))
-        .subcommand(App::new("pip-list").alias("l").about("pip list"))
-        .subcommand(App::new("pip-update").alias("u").about("pip install -U pip setuptools"))
+        .subcommand_required(true)
+        .arg_required_else_help(true)
+        .subcommand(Command::new("pip-list-outdated").alias("o").about("pip list -o"))
+        .subcommand(Command::new("pip-list").alias("l").about("pip list"))
+        .subcommand(Command::new("pip-update").alias("u").about("pip install -U pip setuptools"))
         .subcommand(
-            App::new("install")
+            Command::new("install")
                 .alias("i")
                 .about("install packages or project (setup.py or requirements.txt)")
                 .arg(Arg::new("packages").required(false).multiple_values(true)),
         )
-        .subcommand(App::new("venv").alias("v").about("create .venv"))
-        .subcommand(App::new("uninstall").alias("d").about("uninstall all packages(+editable) from venv"))
-        .subcommand(App::new("kill").alias("k").about("kill python processes"))
+        .subcommand(Command::new("venv").alias("v").about("create .venv"))
+        .subcommand(Command::new("uninstall").alias("d").about("uninstall all packages(+editable) from venv"))
+        .subcommand(Command::new("kill").alias("k").about("kill python processes"))
         .get_matches();
 
     match matches.subcommand() {

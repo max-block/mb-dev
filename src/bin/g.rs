@@ -1,19 +1,21 @@
-use clap::{arg, crate_version, App, AppSettings, Arg};
+use clap::{arg, crate_version, Arg, Command};
 use mb_dev::shell;
 
 fn main() {
-    let matches = App::new("git helper")
+    let matches = Command::new("git helper")
         .version(crate_version!())
-        .setting(AppSettings::SubcommandRequiredElseHelp)
-        .setting(AppSettings::DisableHelpSubcommand)
-        .subcommand(App::new("diff").alias("d").about("git diff"))
-        .subcommand(App::new("log").alias("l").about("git log"))
-        .subcommand(App::new("tag").alias("t").about("git tag"))
-        .subcommand(App::new("status").alias("s").about("git status"))
-        .subcommand(App::new("clone").alias("c").about("git clone").arg(arg!(<repo>)))
-        .subcommand(App::new("push").alias("p").about("git add & commit & push").arg(Arg::new("MESSAGE").default_value("update")))
-        .subcommand(App::new("add-tag").alias("at").about("add tag and push").arg(arg!(<VERSION>)))
-        .subcommand(App::new("delete-tag").alias("dt").about("delete tag and push").arg(arg!(<VERSION>)))
+        .subcommand_required(true)
+        .arg_required_else_help(true)
+        .subcommand(Command::new("diff").alias("d").about("git diff"))
+        .subcommand(Command::new("log").alias("l").about("git log"))
+        .subcommand(Command::new("tag").alias("t").about("git tag"))
+        .subcommand(Command::new("status").alias("s").about("git status"))
+        .subcommand(Command::new("clone").alias("c").about("git clone").arg(arg!(<repo>)))
+        .subcommand(
+            Command::new("push").alias("p").about("git add & commit & push").arg(Arg::new("MESSAGE").default_value("update")),
+        )
+        .subcommand(Command::new("add-tag").alias("at").about("add tag and push").arg(arg!(<VERSION>)))
+        .subcommand(Command::new("delete-tag").alias("dt").about("delete tag and push").arg(arg!(<VERSION>)))
         .get_matches();
 
     match matches.subcommand() {
