@@ -7,7 +7,10 @@ struct Args {
     dest: String,
 }
 
+const EXCLUDE_DIRS: &'static [&str] = &[".venv", "target", "node_modules", ".mypy_cache", ".pytest_cache"];
+
 fn main() {
     let args = Args::parse();
-    shell(&format!("rsync -azvhP --exclude=.venv/ --exclude=target/ --exclude=node_modules/ {} {}", args.src, args.dest));
+    let exclude = EXCLUDE_DIRS.into_iter().map(|d| format!("--exlude={}/", d)).collect::<Vec<String>>().join(" ");
+    shell(&format!("rsync -azvhP {} {} {}", exclude, args.src, args.dest));
 }
