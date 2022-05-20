@@ -24,7 +24,7 @@ fn main() {
                     exit(&format!("Confirm failed! {} != {}", server, confirm))
                 }
             }
-            shell(&format!("hcloud server rebuild '{}' --image=ubuntu-20.04", server));
+            shell(&format!("hcloud server rebuild '{}' --image=ubuntu-22.04", server));
             shell(&format!("dh {}", server));
         }
         Some(("delete", m)) => {
