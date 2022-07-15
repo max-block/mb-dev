@@ -22,7 +22,7 @@ fn main() {
         Some(("diff", _)) => shell("git diff"),
         Some(("log", _)) => shell("git log"),
         Some(("tag", _)) => shell("git tag --sort=-creatordate"),
-        Some(("status", _)) => shell("git status"),
+        Some(("status", _)) => shell("git status -u"),
         Some(("clone", m)) => shell(&format!("git clone {}", m.value_of("repo").unwrap())),
         Some(("push", m)) => shell(&format!("git add . && git commit -m '{}' && git push", m.value_of("MESSAGE").unwrap())),
         Some(("add-tag", m)) => shell(&format!(
